@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 382a08e99061d1949ba40f07f7b8c9f7, type: 3}
+  m_Name: Background
+  m_EditorClassIdentifier: 
+  m_AnimatedSprites:
+  - {fileID: 7435148241744826507, guid: 72700099e1c07824a95871b2517d34ab, type: 3}
+  - {fileID: 7386885593499850639, guid: 72700099e1c07824a95871b2517d34ab, type: 3}
+  - {fileID: -7423605934633745709, guid: 72700099e1c07824a95871b2517d34ab, type: 3}
+  - {fileID: -8086013770088406956, guid: 72700099e1c07824a95871b2517d34ab, type: 3}
+  m_MinSpeed: 0
+  m_MaxSpeed: 0
+  m_AnimationStartTime: 0
+  m_TileColliderType: 1
