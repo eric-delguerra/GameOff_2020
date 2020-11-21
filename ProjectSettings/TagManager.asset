@@ -9,6 +9,7 @@ TagManager:
   - PlayerSpawn
   - GoToNextLevel
   - FadeSystem
+  - Plume
   layers:
   - Default
   - TransparentFX

@@ -100,10 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 250
-  jumpForce: 250
+  jumpForce: 300
   isJumping: 0
   isGrounded: 0
   gravityScale: 0.59
+  particleSystem: {fileID: 0}
   sp: {fileID: 919519290713868484}
   groundCheck: {fileID: 919519289611467023}
   groundCheckRadius: 0.29

@@ -12,6 +12,7 @@ public class MovePlayer : MonoBehaviour
     private float horizontalMove;
     public float gravityScale;
     private bool _canPlane;
+    private bool jumpBtnDown = false; 
 
     public ParticleSystem particleSystem;
     public SpriteRenderer sp;
@@ -22,9 +23,11 @@ public class MovePlayer : MonoBehaviour
     public UnityEvent OnLandEvent;
     
     public Rigidbody2D rb;
-    
     private Vector3 _velocity = Vector3.zero;
-
+    
+    // Double click
+    private const float DOUBLE_CLICK_TIME = 0.2f;
+    private float lastClickTime;
     private void Awake()
     {
         if (OnLandEvent == null)
@@ -32,33 +35,31 @@ public class MovePlayer : MonoBehaviour
             OnLandEvent = new UnityEvent();
         }
     }
+    
 
     private void Update()
-    {   
-        if (Input.GetButtonDown("Jump") && isGrounded)
+    {
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
         {
-                isJumping = true;
-                _canPlane = true;
+            
+            float timeLastClick = Time.time - lastClickTime;
+            lastClickTime = Time.time;
+            if (timeLastClick <= DOUBLE_CLICK_TIME)
+            {
+                if (Math.Sign(rb.velocity.x) == 1)
+                {
+                    dash(1000);
+                }
+                else
+                {
+                    dash(-1000);
+                }
+            }
         }
-
-        if (isGrounded && rb.velocity.y < 0)
-        {
-            OnLandEvent.Invoke();
-        }
-        
+        jumpEntries();
         MoveDirection(rb.velocity.x);
         sp.flipX = _alignPosition;
-        
-        
-        if (_canPlane && Input.GetKeyDown(KeyCode.Space))
-        {
-            Plane();
-        }
-        else if (_canPlane && Input.GetKeyUp(KeyCode.Space))
-        {
-            animator.SetBool("IsFlying", false);
-            rb.gravityScale = 1f;
-        }
+      
     }
 
     // Plus pour la gestion de la physique et pas d'entrée d'input
@@ -74,8 +75,50 @@ public class MovePlayer : MonoBehaviour
     {
         animator.SetBool("IsJumping", false);
         animator.SetBool("IsFlying", false);
+        animator.SetBool("IsGrounded", true);
     }
-    
+
+    void jumpEntries()
+    {
+        if (Input.GetButtonDown("Jump"))
+        {
+            jumpBtnDown = true;
+        } else if (Input.GetButtonUp("Jump"))
+        {
+            jumpBtnDown = false;
+        }
+       
+        if (Mathf.Sign(rb.velocity.y) == -1 && (animator.GetBool("IsJumping") || jumpBtnDown))
+        {
+            _canPlane = true;
+        }
+        else
+        {
+            _canPlane = false;
+        }
+        
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            isJumping = true;
+        }
+
+        if (isGrounded && rb.velocity.y < 0)
+        {
+            OnLandEvent.Invoke();
+        }
+          
+        
+        if (_canPlane && Input.GetButtonDown("Jump"))
+        {
+            Plane();
+        }
+        else if (Input.GetButtonUp("Jump"))
+        {
+            animator.SetBool("IsFlying", false);
+            rb.gravityScale = 1f;
+            rb.mass = 1f;
+        }
+    }
     void PlayerMove(float horizontaleMove)
     {
         Vector3 targetVelocity = new Vector2(horizontaleMove, rb.velocity.y);
@@ -83,6 +126,7 @@ public class MovePlayer : MonoBehaviour
 
         if (isJumping)
         {
+            animator.SetBool("IsGrounded", false);
             animator.SetBool("IsJumping", true);
             rb.AddForce(new Vector2(0f, jumpForce));
             isJumping = false;
@@ -94,6 +138,7 @@ public class MovePlayer : MonoBehaviour
     {
         animator.SetBool("IsFlying", true);
         rb.gravityScale = gravityScale;
+        rb.mass = 0.7f;
     }
     
     void MoveDirection(float num)
@@ -110,6 +155,11 @@ public class MovePlayer : MonoBehaviour
         }
     }
 
+    void dash(float force)
+    {
+        rb.AddForce(new Vector2(force, 0));
+    }
+    
     // private void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.red;
