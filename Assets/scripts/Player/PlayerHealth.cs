@@ -9,16 +9,19 @@ public class PlayerHealth : MonoBehaviour
     public bool isInvisible = false;
     public float invisibilityTimeAfterDamage;
     public float invisibleDelay = 0.2f;
+    private AudioSource hurtSound;
 
 
     public SpriteRenderer spriteRenderer;
     public HealthBar healthBar;
+    private MovePlayer player;
 
     
     
     // Start is called before the first frame update
     void Start()
     {
+        hurtSound = GameObject.Find("Hurt").GetComponent<AudioSource>();
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
     }
@@ -36,6 +39,7 @@ public class PlayerHealth : MonoBehaviour
     {
         if (!isInvisible)
         {
+            hurtSound.Play();
             healthBar.SetHealth(currentHealth -= damage);
             isInvisible = true;
             StartCoroutine(InvisibilityFlash());

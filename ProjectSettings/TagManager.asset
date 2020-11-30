@@ -10,6 +10,10 @@ TagManager:
   - GoToNextLevel
   - FadeSystem
   - Plume
+  - BossCamera
+  - Ground
+  - Boss
+  - GameMusic
   layers:
   - Default
   - TransparentFX

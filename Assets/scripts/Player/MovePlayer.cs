@@ -10,10 +10,13 @@ public class MovePlayer : MonoBehaviour
     public bool isGrounded;
     private bool _alignPosition = true;
     private float horizontalMove;
+    private float verticalMove;
     public float gravityScale;
     private bool _canPlane;
-    private bool jumpBtnDown = false; 
+    private bool jumpBtnDown = false;
+    public bool isClimbing;
 
+    private AudioSource jumpSound;
     public ParticleSystem particleSystem;
     public SpriteRenderer sp;
     public Transform groundCheck;
@@ -21,45 +24,53 @@ public class MovePlayer : MonoBehaviour
     public LayerMask collisionLayer;
     public Animator animator;
     public UnityEvent OnLandEvent;
-    
+
     public Rigidbody2D rb;
     private Vector3 _velocity = Vector3.zero;
-    
-    // Double click
-    private const float DOUBLE_CLICK_TIME = 0.2f;
-    private float lastClickTime;
+
+    // // Double click
+    // private const float DOUBLE_CLICK_TIME = 0.2f;
+    // private float lastClickTime;
     private void Awake()
     {
+        jumpSound = GameObject.Find("Jump").GetComponent<AudioSource>();
         if (OnLandEvent == null)
         {
             OnLandEvent = new UnityEvent();
         }
     }
-    
+
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-        {
-            
-            float timeLastClick = Time.time - lastClickTime;
-            lastClickTime = Time.time;
-            if (timeLastClick <= DOUBLE_CLICK_TIME)
-            {
-                if (Math.Sign(rb.velocity.x) == 1)
-                {
-                    dash(1000);
-                }
-                else
-                {
-                    dash(-1000);
-                }
-            }
-        }
+        //     if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+        //     {
+        //         
+        //         float timeLastClick = Time.time - lastClickTime;
+        //         lastClickTime = Time.time;
+        //         if (timeLastClick <= DOUBLE_CLICK_TIME)
+        //         {
+        //             if (Math.Sign(rb.velocity.x) == 1)
+        //             {
+        //                 dash(1000);
+        //             }
+        //             else
+        //             {
+        //                 dash(-1000);
+        //             }
+        //         }
+        //     }
         jumpEntries();
-        MoveDirection(rb.velocity.x);
-        sp.flipX = _alignPosition;
-      
+        if (isClimbing)
+        {
+            MoveDirection(rb.velocity.y);
+            sp.flipY = _alignPosition;
+        }
+        else
+        {
+            MoveDirection(rb.velocity.x);
+            sp.flipX = _alignPosition;
+        }
     }
 
     // Plus pour la gestion de la physique et pas d'entrée d'input
@@ -67,8 +78,8 @@ public class MovePlayer : MonoBehaviour
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, collisionLayer);
         horizontalMove = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
-        PlayerMove(horizontalMove);
-        
+        verticalMove = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
+        PlayerMove(horizontalMove, verticalMove);
     }
 
     public void OnLanding()
@@ -83,11 +94,12 @@ public class MovePlayer : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             jumpBtnDown = true;
-        } else if (Input.GetButtonUp("Jump"))
+        }
+        else if (Input.GetButtonUp("Jump"))
         {
             jumpBtnDown = false;
         }
-       
+
         if (Mathf.Sign(rb.velocity.y) == -1 && (animator.GetBool("IsJumping") || jumpBtnDown))
         {
             _canPlane = true;
@@ -96,7 +108,7 @@ public class MovePlayer : MonoBehaviour
         {
             _canPlane = false;
         }
-        
+
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             isJumping = true;
@@ -106,8 +118,8 @@ public class MovePlayer : MonoBehaviour
         {
             OnLandEvent.Invoke();
         }
-          
-        
+
+
         if (_canPlane && Input.GetButtonDown("Jump"))
         {
             Plane();
@@ -119,19 +131,29 @@ public class MovePlayer : MonoBehaviour
             rb.mass = 1f;
         }
     }
-    void PlayerMove(float horizontaleMove)
-    {
-        Vector3 targetVelocity = new Vector2(horizontaleMove, rb.velocity.y);
-        rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref _velocity, .05f);
 
-        if (isJumping)
+    void PlayerMove(float _horizontaleMove, float _verticalMove)
+    {
+        if (!isClimbing)
         {
-            animator.SetBool("IsGrounded", false);
-            animator.SetBool("IsJumping", true);
-            rb.AddForce(new Vector2(0f, jumpForce));
-            isJumping = false;
+            Vector3 targetVelocity = new Vector2(_horizontaleMove, rb.velocity.y);
+            rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref _velocity, .05f);
+
+            if (isJumping)
+            {
+                jumpSound.Play();
+                animator.SetBool("IsGrounded", false);
+                animator.SetBool("IsJumping", true);
+                rb.AddForce(new Vector2(0f, jumpForce));
+                isJumping = false;
+            }
         }
-        
+        else
+        {
+            animator.SetBool("IsJumping", false);
+            Vector3 targetVelocity = new Vector2(0, _verticalMove);
+            rb.velocity = Vector3.SmoothDamp(rb.velocity, targetVelocity, ref _velocity, .05f);
+        }
     }
 
     void Plane()
@@ -140,7 +162,7 @@ public class MovePlayer : MonoBehaviour
         rb.gravityScale = gravityScale;
         rb.mass = 0.7f;
     }
-    
+
     void MoveDirection(float num)
     {
         animator.SetFloat("Speed", Mathf.Abs(num));
@@ -159,7 +181,9 @@ public class MovePlayer : MonoBehaviour
     {
         rb.AddForce(new Vector2(force, 0));
     }
-    
+
+
+
     // private void OnDrawGizmos()
     // {
     //     Gizmos.color = Color.red;

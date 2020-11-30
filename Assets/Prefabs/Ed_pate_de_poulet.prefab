@@ -1,5 +1,53 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &985842798653826058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5375100096224451925}
+  - component: {fileID: 7752198514956418493}
+  m_Layer: 0
+  m_Name: BasDeLaPatte
+  m_TagString: Boss
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5375100096224451925
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985842798653826058}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.399, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1826690409586951379}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7752198514956418493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985842798653826058}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279261447139ade4e8f933a3788c63a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
+  pointA: {fileID: 0}
+  pointB: {fileID: 0}
+  speed: 10
+  basDeLaPatte: {fileID: 0}
 --- !u!1 &1826690409586951373
 GameObject:
   m_ObjectHideFlags: 0
@@ -14,7 +62,7 @@ GameObject:
   - component: {fileID: 342526742528329203}
   m_Layer: 0
   m_Name: Ed_pate_de_poulet
-  m_TagString: Untagged
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28,8 +76,9 @@ Transform:
   m_GameObject: {fileID: 1826690409586951373}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 48.02603, y: -15.31, z: 0}
-  m_LocalScale: {x: 6.106893, y: 6.106893, z: 6.106893}
-  m_Children: []
+  m_LocalScale: {x: 5, y: 5, z: 2}
+  m_Children:
+  - {fileID: 5375100096224451925}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -154,3 +203,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 279261447139ade4e8f933a3788c63a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 50
+  pointA: {fileID: 0}
+  pointB: {fileID: 0}
+  speed: 5
+  basDeLaPatte: {fileID: 5375100096224451925}

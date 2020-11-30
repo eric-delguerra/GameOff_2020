@@ -8,6 +8,7 @@ public class HoleMovement : MonoBehaviour
     private bool canMooveThrow;
     private GameObject player;
     private SpriteRenderer edF;
+    public bool canGoBack;
 
     // Start is called before the first frame update
     void Awake()
@@ -19,27 +20,27 @@ public class HoleMovement : MonoBehaviour
 
     private void Update()
     {
-        if (canMooveThrow && Input.GetKeyDown(KeyCode.F))
+        if (canMooveThrow && Input.GetKeyDown(KeyCode.F) && canGoBack)
         {
-                player.transform.position = destinationPos.position;
-         }
+            player.transform.position = destinationPos.position;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && canGoBack)
         {
             canMooveThrow = true;
-            edF.color = new Color(1f,1f,1f, 1f);
+            edF.color = new Color(1f, 1f, 1f, 1f);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && canGoBack)
         {
             canMooveThrow = false;
-            edF.color = new Color(1f,1f,1f, 0f);
+            edF.color = new Color(1f, 1f, 1f, 0f);
         }
     }
 }
